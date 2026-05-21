@@ -1,0 +1,81 @@
+local Planet4PlanetMenu = {}
+Planet4PlanetMenu.__index = Planet4PlanetMenu
+local AudioManager = require("audio/audiomanager")
+local soundManager = AudioManager.new()
+local button = love.graphics.newImage("sprites/buttons/buttons.png")
+function Planet4PlanetMenu.new()
+    local self = setmetatable({}, Planet4PlanetMenu)
+    self.buttons = {
+        {x = 1148, y = 348, r = 31, text = "zone 1"},
+        {x = 1270, y = 456, r = 78, text = "zone 2"},
+        {x = 900, y = 520, r = 270, text = "zone 3"},
+        {x = 100, y = 100, w = 200, h = 50, text = "back", sprite = button},
+    }
+    return self
+end
+function Planet4PlanetMenu:draw()
+    for i,v in ipairs(self.buttons) do
+        if v.sprite then
+            love.graphics.draw(v.sprite, v.x, v.y)
+            love.graphics.print(v.text, v.x + v.w/2, v.y + v.h/2)
+        else
+            love.graphics.print(v.text, (v.x + v.r/2)- 100, (v.y + v.r/2)-50)
+        end
+    end
+end
+function Planet4PlanetMenu:mousepressed(x,y,b,s)
+    if b==1 then
+        for i,v in ipairs(self.buttons) do
+            if v.r then
+                if (x-v.x)^2 + (y-v.y)^2 < v.r^2 then
+                    if v.text=="zone 1" then
+                        if Data.lvl1.completed and Data.lvl2.completed and Data.lvl3.completed and Data.lvl4.completed and Data.lvl5.completed and Data.lvl6.completed and Data.lvl7.completed and Data.lvl8.completed and Data.lvl9.completed then
+                        soundManager:playSound(1)
+                            Data.levelbloq = false
+                            Data.lvl = 10
+                            Data.player.deadgameenemies = 0
+                            Data.player.cometsintercepted = 0
+                            Data.player.lifepointsgained = 0
+                            Data.currentState = "game"
+                            Data.currentLevel = s[Data.currentState].planet4.level1
+                        else
+                            Data.levelbloq = true
+                        end
+                    elseif v.text=="zone 2" then
+                        if Data.lvl1.completed and Data.lvl2.completed and Data.lvl3.completed and Data.lvl4.completed and Data.lvl5.completed and Data.lvl6.completed and Data.lvl7.completed and Data.lvl8.completed and Data.lvl9.completed and Data.lvl10.completed then
+                        soundManager:playSound(1)
+                            Data.levelbloq = false
+                            Data.lvl = 11
+                            Data.player.deadgameenemies = 0
+                            Data.player.cometsintercepted = 0
+                            Data.player.lifepointsgained = 0
+                            Data.currentState = "game"
+                            Data.currentLevel = s[Data.currentState].planet4.level2
+                        else 
+                            Data.levelbloq = true
+                        end
+                    elseif v.text=="zone 3" then
+                        if Data.lvl1.completed and Data.lvl2.completed and Data.lvl3.completed and Data.lvl4.completed and Data.lvl5.completed and Data.lvl6.completed and Data.lvl7.completed and Data.lvl8.completed and Data.lvl9.completed and Data.lvl10.completed and Data.lvl11.completed then
+                        soundManager:playSound(1)
+                            Data.levelbloq = false
+                            Data.lvl = 12
+                            Data.player.deadgameenemies = 0
+                            Data.player.cometsintercepted = 0
+                            Data.player.lifepointsgained = 0
+                            Data.currentState = "game"
+                            Data.currentLevel = s[Data.currentState].planet4.level3
+                        else
+                            Data.levelbloq = true
+                        end
+                    end
+                end
+            elseif v.w and v.h then
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    Data.currentState = "mainplanetmenu"
+                    Data.levelbloq = false
+                end
+            end
+        end
+    end
+end
+return Planet4PlanetMenu
