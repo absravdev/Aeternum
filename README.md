@@ -9,13 +9,15 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshot0.png" width="32%" alt="Aeternum screenshot 0" />
   <img src="docs/screenshot2.png" width="32%" alt="Aeternum screenshot 2" />
   <img src="docs/screenshot3.png" width="32%" alt="Aeternum screenshot 3" />
   <img src="docs/screenshot4.png" width="32%" alt="Aeternum screenshot 4" />
   <img src="docs/screenshot5.png" width="32%" alt="Aeternum screenshot 5" />
   <img src="docs/screenshot6.png" width="32%" alt="Aeternum screenshot 6" />
-  <img src="docs/screenshot7.png" width="32%" alt="Aeternum screenshot 7" />
+</p>
+
+<p align="center">
+  <strong><a href="https://YOUR-ITCH-USERNAME.itch.io/aeternum">Download and play on itch.io (Windows, no setup)</a></strong>
 </p>
 
 ## About this repository
@@ -63,13 +65,17 @@ This is the only part of the project touched after 2023. Wiring it in meant addi
 
 ## How to run it
 
-You'll need [LÖVE 11.x](https://love2d.org/) installed (11.3+ recommended so the online leaderboard's `https` module is available).
+**Easiest, Windows, no setup needed.** Download the ready-to-play build from itch.io, unzip it, and run `Aeternum.exe`. Nothing to install.
+
+**[Download Aeternum on itch.io](https://YOUR-ITCH-USERNAME.itch.io/aeternum)**
+
+**From source (any platform).** You'll need [LÖVE 11.x](https://love2d.org/) installed (11.3+ recommended so the online leaderboard's `https` module is available), then run:
 
 ```bash
 love .
 ```
 
-Or by dragging the folder onto the Love2D executable. A packaged, ready-to-play build is available under [Releases](../../releases).
+Or drag the game folder onto the Love2D executable. A packaged build is also attached to each [GitHub release](../../releases).
 
 ## Controls
 
