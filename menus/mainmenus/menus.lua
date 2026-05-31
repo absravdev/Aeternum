@@ -1,4 +1,3 @@
---
 local MainMenu = require("menus/mainmenus/mainmenu")
 local StartGameMenu = require("menus/mainmenus/startgamemenu")
 --OptionsMenus
@@ -24,6 +23,9 @@ local DrawStatsGameMenu = require("menus/drawmenus/drawstatsgamemenu")
 local DrawSpaceShipMenu = require("menus/drawmenus/drawspaceshipmenu")
 local DrawStatsMainMenu = require("menus/drawmenus/drawmainmenu")
 local DrawGameWinMenu = require("menus/drawmenus/drawgamewinmenu")
+--Records globales
+local NameMenu = require("menus/mainmenus/namemenu")
+local LeaderboardMenu = require("menus/mainmenus/leaderboardmenu")
 --Enemy 
 local Planet1level1 = require("planetlevels/planet1/planet1level1")
 local Planet1level2 = require("planetlevels/planet1/planet1level2")
@@ -40,7 +42,7 @@ local Planet4level3 = require("planetlevels/planet4/planet4level3")
 local Planet5level1 = require("planetlevels/planet5/planet5level1")
 local Planet5level2 = require("planetlevels/planet5/planet5level2")
 local Planet5level3 = require("planetlevels/planet5/planet5level3")
------------------------------------------------------------------------
+-----------
 local mainmenu = MainMenu.new()
 local startgamemenu = StartGameMenu.new()
 --OptionsMenus
@@ -53,7 +55,6 @@ local planet3planetmenu = Planet3PlanetMenu.new()
 local planet4planetmenu = Planet4PlanetMenu.new()
 local planet5planetmenu = Planet5PlanetMenu.new()
 --SpaceshipMenus
---
 local mainspaceshipmenu = MainSpaceshipMenu.new()
 local bombspaceshipmenu = BombSpaceshipMenu.new()
 local laserspaceshipmenu = LaserSpaceshipMenu.new()
@@ -61,13 +62,16 @@ local shieldspaceshipmenu = ShieldSpaceshipMenu.new()
 local speedbulletspaceshipmenu = SpeedBulletSpaceshipMenu.new()
 local fireratespaceshipmenu = FirerateSpaceshipMenu.new()
 local speedmovementspaceshipmenu = SpeedMovementSpaceshipMenu.new()
---
+-----------
 local gameovermenu = GameOverMenu.new()
 local levelcompletedmenu = LevelCompletedMenu.new()
 local drawstatsgamemenu = DrawStatsGameMenu.new()
 local drawspaceshipmenu = DrawSpaceShipMenu.new()
 local drawstatsmainmenu = DrawStatsMainMenu.new()
 local drawgamewinmenu = DrawGameWinMenu.new()
+-----------
+local namemenu = NameMenu.new()
+local leaderboardmenu = LeaderboardMenu.new()
 -----------
 local planet1level1 = Planet1level1.new()
 local planet1level2 = Planet1level2.new()
@@ -85,7 +89,7 @@ local planet4level3 = Planet4level3.new()
 local planet5level1 = Planet5level1.new()
 local planet5level2 = Planet5level2.new()
 local planet5level3 = Planet5level3.new()
------------------
+-----------
 local menus = {
     mainmenu = mainmenu,
     startgamemenu = startgamemenu,
@@ -113,6 +117,9 @@ local menus = {
     drawspaceshipmenu = drawspaceshipmenu,
     drawstatsmainmenu = drawstatsmainmenu,
     drawgamewinmenu = drawgamewinmenu,
+    --Records globales
+    namemenu = namemenu,
+    leaderboardmenu = leaderboardmenu,
     planet1level1 = planet1level1,
     planet1level2 = planet1level2,
     planet1level3 =  planet1level3,

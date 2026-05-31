@@ -1,13 +1,11 @@
 local states = {}
--------------------------------------------------------------
+-----------
 Data:setCurrentStage("startgamemenu")
 local AudioManager = require("audio/audiomanager")
 local soundManager = AudioManager.new()
---MainMenus
 local menus = require("menus/mainmenus/menus")
---MainMenus---------------------------------------------------
 local font = love.graphics.newFont("fonts/alien.ttf", 25)
---MainMenus---------------------------------------------------
+-----------
 local menuplanetsbackground = love.graphics.newImage("sprites/fons.png")
 local menuplanet1background = love.graphics.newImage("sprites/planet1menu.png")
 local menuplanet2background = love.graphics.newImage("sprites/planet2menu.png")
@@ -59,6 +57,27 @@ states["mainmenu"] = {
         love.graphics.draw(mainbackground, 0, 0, 0)
         menus.drawstatsmainmenu:draw(dt)
         menus.mainmenu:draw()
+    end
+}
+states["namemenu"] = {
+    load = function()
+    end,
+    update = function(dt)
+    end,
+    draw = function()
+        love.graphics.draw(mainbackground, 0, 0, 0)
+        love.graphics.setFont(font)
+        menus.namemenu:draw()
+    end
+}
+states["leaderboardmenu"] = {
+    load = function()
+    end,
+    update = function(dt)
+    end,
+    draw = function()
+        love.graphics.draw(mainbackground, 0, 0, 0)
+        menus.leaderboardmenu:draw()
     end
 }
 --OptionsMenus

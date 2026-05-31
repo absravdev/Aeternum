@@ -2,7 +2,6 @@ local DrawStatsMainMenu = {}
 DrawStatsMainMenu.__index = DrawStatsMainMenu
 local font2 = love.graphics.newFont("fonts/alien.ttf", 20)
 local font = love.graphics.newFont("fonts/alien.ttf", 25)
--- Mueve la declaración de 'timer' aquí
 local timer = 0
 local a = true
 local b = true

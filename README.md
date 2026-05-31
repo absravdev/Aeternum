@@ -1,6 +1,6 @@
 # Aeternum
 
-> My first complete game, built in Love2D / Lua. A top-down shooter with 15 levels across 5 planets, an upgrade system and a shop. I'm uploading it exactly as I left it when I finished it, with no later refactoring, an honest snapshot of where I was as a developer back then.
+> My first complete game, built in Love2D / Lua. A top-down shooter with 15 levels across 5 planets, an upgrade system and a shop. The **original game** is uploaded exactly as I left it when I finished it in 2023, with no later refactoring, an honest snapshot of where I was as a developer back then. The one thing I added years later is an **online leaderboard**, kept separate and documented in [its own section](#online-leaderboard-added-in-2026).
 
 <p align="center">
   <a href="https://youtu.be/rTFi5HzEdAk?si=Oq6bFmgcYhf6JiBt">
@@ -9,21 +9,25 @@
 </p>
 
 <p align="center">
+  <img src="docs/screenshot0.png" width="32%" alt="Aeternum screenshot 0" />
   <img src="docs/screenshot2.png" width="32%" alt="Aeternum screenshot 2" />
   <img src="docs/screenshot3.png" width="32%" alt="Aeternum screenshot 3" />
   <img src="docs/screenshot4.png" width="32%" alt="Aeternum screenshot 4" />
   <img src="docs/screenshot5.png" width="32%" alt="Aeternum screenshot 5" />
   <img src="docs/screenshot6.png" width="32%" alt="Aeternum screenshot 6" />
+  <img src="docs/screenshot7.png" width="32%" alt="Aeternum screenshot 7" />
 </p>
 
 ## About this repository
 
-Aeternum is the first serious project I ever finished as a developer. I built it over 2-3 weeks, finishing it in November 2023, with significant help from AI in many places, and with no prior programming experience. It has bugs, design choices I wouldn't make today, and patterns I'd factor out in a heartbeat. **It's uploaded exactly as it was**, untouched after the fact, because this repo isn't meant to showcase "clean code." It's meant to show two things:
+Aeternum is the first serious project I ever finished as a developer. I built it over 2-3 weeks, finishing it in November 2023, with significant help from AI in many places, and with no prior programming experience. It has bugs, design choices I wouldn't make today, and patterns I'd factor out in a heartbeat. **The original game is uploaded exactly as it was**, untouched after the fact, because this repo isn't meant to showcase "clean code." It's meant to show two things:
 
 - that I was able to ship a complete, playable game with menus, progression, balancing and audio,
 - and that today I can look at that code with a critical eye and point to exactly what's wrong with it.
 
 That second part is documented below, in [Known bugs and technical debt](#known-bugs-and-technical-debt) and [What I'd do differently today](#what-id-do-differently-today).
+
+**One later addition:** in 2026 I came back and bolted an [online leaderboard](#online-leaderboard-added-in-2026) onto the game, as an exercise in adding networking and a backend to an existing codebase. That's the only thing touched after 2023, and it did modify a handful of the original files. I've kept it clearly labelled so the 2023 snapshot stays legible, the rest of the game's structure and rough edges are untouched on purpose.
 
 A note on credit: **the code is mine, the art and audio are not**, I used free-to-use assets from other creators. See [Credits](#credits) for details.
 
@@ -40,16 +44,32 @@ You pilot a ship defending its position against waves of enemies across differen
 - Spatial objects that affect the battlefield (stars, black holes with a telegraph warning before they appear)
 - Music and sound effects with toggles
 - Complete menu system: planets, shop, options, game over, level cleared
+- **Online global leaderboard** (added in 2026) ranked by leftover health, see [its own section](#online-leaderboard-added-in-2026)
+
+## Online leaderboard (added in 2026)
+
+The original game was fully offline. Years later, as an exercise in adding networking to an existing codebase, I built a **global online leaderboard**: when you finish all 15 levels, your run is submitted to a server and ranked against everyone else's, ordered by **leftover health**, the more life you finish with, the higher you place. You can browse the global top from the leaderboard menu inside the game.
+
+This is the only part of the project touched after 2023. Wiring it in meant adding a small networking layer to the client and standing up a separate backend, and it did modify a few of the original files (`main.lua`, `others/data.lua`, and the game-over and leaderboard menus). Everything else is left as it was.
+
+**Client side** (in this repo):
+
+- `network/leaderboard.lua`, a small client that talks to the server. HTTP requests run on a separate LÖVE thread (`love.thread`) so a slow or cold-starting server never freezes the game loop. It uses the bundled `https` module (available in LÖVE 11.3+) and `libs/json.lua` ([rxi/json.lua](https://github.com/rxi/json.lua)) for JSON encoding.
+- On finishing the game, the run (name + leftover health + total kills + money) is submitted once, and the leaderboard menu fetches and renders the global top 10, sorted by health.
+
+**Server side** (separate repo): a small **Node.js + Express** API backed by **PostgreSQL** (hosted on **Neon**), deployed for free on **Render**. It exposes two endpoints, one to submit a run and one to read the ranked top N, and stores everything in a single `scores` table. The database connection string lives only as an environment variable on the host, never in the code.
+
+> Heads-up: the leaderboard endpoint is public and unauthenticated, which is fine for a hobby project but means scores aren't verified server-side. It's there for fun, not as a competitive ladder.
 
 ## How to run it
 
-You'll need [LÖVE 11.x](https://love2d.org/) installed.
+You'll need [LÖVE 11.x](https://love2d.org/) installed (11.3+ recommended so the online leaderboard's `https` module is available).
 
 ```bash
 love .
 ```
 
-Or by dragging the folder onto the Love2D executable.
+Or by dragging the folder onto the Love2D executable. A packaged, ready-to-play build is available under [Releases](../../releases).
 
 ## Controls
 
@@ -97,7 +117,7 @@ Aeternum/
 ├── bullets/                # Player and per-enemy-type bullets
 ├── enemies/                # Logic for the 6 enemy types
 ├── menus/
-│   ├── mainmenus/          # Start, main, game over, level cleared, states
+│   ├── mainmenus/          # Start, main, game over, level cleared, leaderboard, states
 │   ├── planetmenus/        # Planet selector and per-planet level selector
 │   ├── spaceshipmenus/     # Upgrade shop
 │   ├── optionsmenus/       # Options
@@ -105,16 +125,20 @@ Aeternum/
 ├── audio/                  # AudioManager and audio files
 ├── others/                 # Global Data, player, collisions, powers
 ├── planetlevels/           # One file per level (planet1level1, planet1level2, ...)
-└── spatialobjects/         # Stars and meteorites
+├── spatialobjects/         # Stars and meteorites
+├── network/                # Online leaderboard client (added 2026)
+└── libs/                   # Third-party libraries (json.lua)
 ```
+
+The Node/Express + PostgreSQL backend that powers the leaderboard lives in its own separate repository.
 
 ## Known bugs and technical debt
 
-I've reviewed this with hindsight. I'm listing them not to make excuses, but to make the point that **I can identify them now**, which is the actual skill that matters.
+I've reviewed this with hindsight. I'm listing them not to make excuses, but to make the point that **I can identify them now**, which is the actual skill that matters. These are all about the original 2023 game.
 
 ### Real bugs
 
-- **`Data:resetData()` is empty.** It's called from `states.lua` when entering several planets, but the function body was never implemented. That's why state between runs doesn't fully clean up (HP, player position, counters).
+- **`Data:resetData()` is empty.** It's called from `states.lua` when entering several planets, but the function body was never implemented. That's why state between runs doesn't fully clean up (HP, player position, counters). This same gap is why the 2026 leaderboard couldn't offer a clean "play again", the game-over screen just exits, because resetting state properly would have meant fixing this first.
 - **Inverted comparison in a bullet-vs-bullet collision check.** In `collisions.lua`, the first check between player bullets and `enemy2` bullets uses `>` instead of `<`. Result: your bullets die when they're *far* from enemy2 bullets, not when they collide with them.
 - **The "gun" power-up sprites are copy-pasted from the shield.** All three variants (`gunlvl1/2/3sprite`) point to `shieldlvl1.png`.
 - **Dirty level state between runs.** Each level caches its `player`, enemy arrays, etc. in module-local variables. Since Lua caches `require`d modules, those locals live forever. The correct fix was the `resetData()` that was left unimplemented.
@@ -145,12 +169,20 @@ If I were rewriting Aeternum from scratch today, the key changes would be:
 5. **A single, clear `GameState`** instead of the `currentState`/`currentLevel` pair with fallback in the dispatcher.
 6. **Some tests**, even basic ones, over the pure logic (collisions, score calculation, cooldown handling).
 
-None of this is going to be applied to this repo. It is what it is, and that's the point of keeping it public.
+None of this is going to be applied to the original game in this repo. It is what it is, and that's the point of keeping it public.
 
 ## Stack
 
+**Game (client, this repo):**
+
 - **Language:** Lua 5.1 (the version Love2D ships with)
 - **Framework:** [LÖVE 11.x](https://love2d.org/)
+
+**Leaderboard backend (added 2026, separate repo):**
+
+- **Node.js + Express** for the API
+- **PostgreSQL** as the database, hosted on [Neon](https://neon.tech/)
+- Deployed on [Render](https://render.com/)
 
 ## Credits
 

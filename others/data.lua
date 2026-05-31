@@ -237,8 +237,9 @@ Data = {
         speedbulletlvl4 = 400,
         ---
         money = 0,
-        lifepoints = 200,
+        lifepoints = 200;
         cometsintercepted = 0,
+        name = "",
     },
     lvl1 = {--be
         enemy1 = {speed = 130, maxTime = 0.5},
@@ -443,8 +444,20 @@ Data = {
     function Data:setCurrentShield(shiled)
         self.currentShiled = shiled
     end
+    function Data:computeRun()
+        local totalMoney = 0
+        for i = 1, 15 do
+            local lvl = self["lvl" .. i]
+            totalMoney = totalMoney + ((lvl and lvl.points) or 0)
+        end
+        return {
+            name       = self.player.name,
+            score      = totalMoney,
+            aliens     = self.player.deadtotalenemies,
+            comets     = 0,
+            lifepoints = self.player.lifepoints,
+        }
+    end
     function ResetData()
     end
 return Data
-
-

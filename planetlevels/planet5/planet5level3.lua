@@ -56,7 +56,7 @@ function Planet5level3:update(dt)
       Data.lvl15.completed = true
    end
    if Data.lvl15.completed == true then
-      Data.currentState = "winmenu"
+      Data.currentState = "gameovermenu"
    end
    if a == true then
       powers = Powers.new(Data.shield.lvl, Data.gun.lvl, Data.bomb.lvl, Data.firerate.lvl)

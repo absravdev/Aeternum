@@ -2,9 +2,11 @@ local DrawGameWinMenu = {}
 DrawGameWinMenu.__index = DrawGameWinMenu
 local AudioManager = require("audio/audiomanager")
 local soundManager = AudioManager.new()
+local Leaderboard = require("network/leaderboard")
 local sprite = love.graphics.newImage("sprites/buttons/buttons.png")
 local font2 = love.graphics.newFont("fonts/alien.ttf", 120)
 local font = love.graphics.newFont("fonts/alien.ttf", 25)
+local submitted = false
 function DrawGameWinMenu.new()
     local self = setmetatable({}, DrawGameWinMenu)
     self.buttons = {
@@ -13,6 +15,10 @@ function DrawGameWinMenu.new()
     return self
 end
 function DrawGameWinMenu:draw()
+    if not submitted then
+        Leaderboard.submitRun(Data:computeRun())
+        submitted = true
+    end
     for i,v in ipairs(self.buttons) do
         love.graphics.draw(v.sprite, v.x + v.w / 2 - v.sprite:getWidth() / 2, v.y + v.h / 2 - v.sprite:getHeight() / 2)
         love.graphics.print(v.text, (v.x + v.w / 2) , (v.y + v.h / 2))

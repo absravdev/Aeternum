@@ -4,7 +4,6 @@ local AudioManager = require("audio/audiomanager")
 local soundManager = AudioManager.new()
 function FirerateSpaceshipMenu.new()
     local self = setmetatable({}, FirerateSpaceshipMenu)
-    -- Inicializa los sprites aquí
     local lvl2SpriteLocked = love.graphics.newImage("sprites/buttons/buttons.png")
     local lvl3SpriteLocked  = love.graphics.newImage("sprites/buttons/buttons.png")
     local lvl4SpriteLocked  = love.graphics.newImage("sprites/buttons/buttons.png")

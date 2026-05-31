@@ -9,6 +9,7 @@ function MainMenu.new()
         {x = 100, y = 100, w = 200, h = 50, text = "planets", sprite = button},
         {x = 100, y = 200, w = 200, h = 50, text = "spaceship", sprite = button},
         {x = 100, y = 300, w = 200, h = 50, text = "options", sprite = button},
+        {x = 100, y = 400, w = 200, h = 50, text = "records", sprite = button},
     }
     return self
 end
@@ -32,6 +33,12 @@ function MainMenu:mousepressed(x,y,b,s)
                 elseif v.text=="options" then
                     soundManager:playSound(1)
                     Data.currentState = "mainoptionsmenu"
+                elseif v.text=="records" then
+                    soundManager:playSound(1)
+                    local Leaderboard = require("network/leaderboard")
+                    Leaderboard.view = "general"
+                    Leaderboard.fetchGeneral(10)
+                    Data.currentState = "leaderboardmenu"
                 end
             end
         end
