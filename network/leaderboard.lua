@@ -2,11 +2,14 @@ local json = require("libs/json")
 
 local Leaderboard = {}
 local BASE_URL = "https://aeternumserverfolder.onrender.com"
+local SUBMIT_PATH = "/scores"
+local PENDING_FILE = "pending_run.json"
 
-Leaderboard.general = {}
-Leaderboard.levels  = {}
-Leaderboard.view    = "general"
-Leaderboard.status  = "idle"
+Leaderboard.general      = {}
+Leaderboard.levels       = {}
+Leaderboard.view         = "general"
+Leaderboard.status       = "idle"
+Leaderboard.submitStatus = "idle"
 
 local channelIn  = love.thread.getChannel("lb_requests")
 local channelOut = love.thread.getChannel("lb_results")
@@ -14,41 +17,94 @@ local thread
 
 local WORKER_CODE = [[
     require("love.thread")
+    require("love.timer")
     local ok_https, https = pcall(require, "https")
     local inbox  = love.thread.getChannel("lb_requests")
     local outbox = love.thread.getChannel("lb_results")
 
-    -- Si la libreria https no esta disponible, el hilo moriria en silencio.
-    -- Avisamos al hilo principal y salimos limpiamente.
     if not ok_https then
         outbox:push({ kind = "fatal", error = tostring(https) })
         return
+    end
+
+    local function doRequest(job)
+        return pcall(https.request, job.url, {
+            method  = job.method,
+            headers = { ["Content-Type"] = "application/json" },
+            data    = job.data,
+        })
     end
 
     while true do
         local job = inbox:demand()
         if job == "quit" then break end
 
-        local ok, code, body = pcall(https.request, job.url, {
-            method  = job.method,
-            headers = { ["Content-Type"] = "application/json" },
-            data    = job.data,
-        })
+        local attempts = job.attempts or 1
+        local delay    = job.delay or 5
+        local ok, code, body = false, 0, ""
+        local success = false
 
-        print("[LB]", job.kind, "ok=", tostring(ok), "code=", tostring(code), "body=", tostring(body))
+        for i = 1, attempts do
+            ok, code, body = doRequest(job)
+            print("[LB]", job.kind, "intento", i, "ok=", tostring(ok), "code=", tostring(code))
+            if ok and type(code) == "number" and code < 400 then
+                success = true
+                break
+            end
+            if i < attempts then love.timer.sleep(delay) end
+        end
 
         outbox:push({
-            kind  = job.kind,            -- "general" | "level" | "submit"
-            level = job.level,           -- solo para "level"
-            code  = ok and code or 0,
-            body  = ok and body or tostring(code),
+            kind    = job.kind,
+            level   = job.level,
+            success = success,
+            code    = (ok and type(code) == "number") and code or 0,
+            body    = (ok and body) or tostring(code),
         })
     end
 ]]
 
+local function savePending(run)
+    love.filesystem.write(PENDING_FILE, json.encode(run))
+end
+
+local function clearPending()
+    if love.filesystem.getInfo(PENDING_FILE) then
+        love.filesystem.remove(PENDING_FILE)
+    end
+end
+
+local function loadPending()
+    if love.filesystem.getInfo(PENDING_FILE) then
+        local contents = love.filesystem.read(PENDING_FILE)
+        if contents then
+            local ok, run = pcall(json.decode, contents)
+            if ok and type(run) == "table" then return run end
+        end
+    end
+    return nil
+end
+
+local function genId()
+    return tostring(os.time()) .. "-" .. tostring(love.math.random(100000, 999999))
+end
+
 function Leaderboard.init()
     thread = love.thread.newThread(WORKER_CODE)
     thread:start()
+    local pending = loadPending()
+    if pending then
+        Leaderboard._enqueueSubmit(pending)
+    end
+end
+
+function Leaderboard.wake()
+    channelIn:push({
+        kind     = "wake",
+        method   = "GET",
+        url      = BASE_URL .. "/leaderboard?limit=1",
+        attempts = 1,
+    })
 end
 
 function Leaderboard.fetchGeneral(limit)
@@ -70,13 +126,24 @@ function Leaderboard.fetchLevel(n, limit)
     })
 end
 
-function Leaderboard.submitRun(run)
+function Leaderboard._enqueueSubmit(run)
+    Leaderboard.submitStatus = "sending"
     channelIn:push({
-        kind   = "submit",
-        method = "POST",
-        url    = BASE_URL .. "/scores",
-        data   = json.encode(run),
+        kind     = "submit",
+        method   = "POST",
+        url      = BASE_URL .. SUBMIT_PATH,
+        data     = json.encode(run),
+        attempts = 12,
+        delay    = 5,
     })
+end
+
+function Leaderboard.submitRun(run)
+    if not run.client_id then
+        run.client_id = genId()
+    end
+    savePending(run)
+    Leaderboard._enqueueSubmit(run)
 end
 
 function Leaderboard.update()
@@ -94,13 +161,22 @@ function Leaderboard.update()
         return
     end
 
-    if r.kind == "submit" then
-        print("[LB] submit code=", r.code, "body=", r.body)
+    if r.kind == "wake" then
         return
     end
 
-    local failed = (not r.code) or r.code >= 400 or not r.body
-    if failed then
+    if r.kind == "submit" then
+        if r.success then
+            clearPending()
+            Leaderboard.submitStatus = "ok"
+        else
+            Leaderboard.submitStatus = "pending"
+        end
+        print("[LB] submit success=", tostring(r.success), "code=", r.code, "body=", r.body)
+        return
+    end
+
+    if (not r.success) or not r.body then
         Leaderboard.status = "error"
         return
     end
@@ -117,6 +193,10 @@ function Leaderboard.update()
         Leaderboard.levels[r.level] = data
     end
     Leaderboard.status = "ok"
+end
+
+function Leaderboard.shutdown()
+    channelIn:push("quit")
 end
 
 return Leaderboard
