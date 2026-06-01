@@ -451,10 +451,10 @@ Data = {
             totalMoney = totalMoney + ((lvl and lvl.points) or 0)
         end
         return {
-            name       = self.player.name,
-            score      = totalMoney,
-            aliens     = self.player.deadtotalenemies,
-            comets     = 0,
+            name = self.player.name,
+            score = totalMoney,
+            aliens = self.player.deadtotalenemies,
+            comets  = self.player.cometsintercepted,
             lifepoints = self.player.lifepoints,
         }
     end
