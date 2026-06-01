@@ -45,9 +45,6 @@ local enemy6bullets = {}
 local powers
 local a = true
 local b = true
-function load()
-   Data.currentlvl = 1
-end
 function Planet3level3.new()
    local self = setmetatable({}, Planet3level3)
    Data.currentlvl = 9
