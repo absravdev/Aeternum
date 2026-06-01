@@ -237,7 +237,7 @@ Data = {
         speedbulletlvl3 = 300,
         speedbulletlvl4 = 400,
         ---
-        money = 10000,
+        money = 0,
         lifepoints = 200;
         cometsintercepted = 0,
         totalcomets = 0,
@@ -255,7 +255,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 4,
+        maxKills = 40,
     },
     lvl2 = {--be
         enemy1 = {speed = 130, maxTime = 0.5},
@@ -269,7 +269,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 5,
+        maxKills = 50,
     },
     lvl3 = { --be
         enemy1 = {speed = 130, maxTime = 1.3},
@@ -283,8 +283,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 60,
-        maxKills = 0,
+        maxKills = 60,
     },
     lvl4 = { --be
         enemy1 = {speed = 100, maxTime = 1.2},
@@ -298,8 +297,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-       -- maxKills = 70,
-                maxKills = 0,
+        maxKills = 70,
     },
     lvl5 = { --be
         enemy1 = {speed = 100, maxTime = 4},
@@ -313,8 +311,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 80,
-                maxKills = 0,
+        maxKills = 80,
     },
     lvl6 = {--be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -328,8 +325,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 90,
-                maxKills = 0,
+        maxKills = 90,
     },
     lvl7 = { --be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -343,8 +339,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 100,
-                maxKills = 0,
+        maxKills = 100,
     },
     lvl8 = {--be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -358,8 +353,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 110,
-                maxKills = 0,
+        maxKills = 110,
     },
     lvl9 = {--be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -373,8 +367,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 110,
-                maxKills = 0,
+        maxKills = 110,
     },
     lvl10 = {
         enemy1 = {speed = 100, maxTime = 1},
@@ -388,8 +381,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 120,
-                maxKills = 0,
+        maxKills = 120,
     },
     lvl11 = {
         --enemy1 = {speed = 90, maxTime = 1},
@@ -403,8 +395,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 130,
-                maxKills = 0,
+        maxKills = 130,
     },
     lvl12 = {
         --enemy1 = {speed = 90, maxTime = 1},
@@ -418,8 +409,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 140,
-                maxKills = 0,
+        maxKills = 140,
     },
     lvl13 = {
         enemy1 = {speed = 100, maxTime = 1.8},
@@ -433,8 +423,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-       -- maxKills = 150,
-        maxKills = 0,
+        maxKills = 150,
     },
     lvl14 = {
         enemy1 = {speed = 100, maxTime = 1},
@@ -448,8 +437,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 160,
-        maxKills = 0,
+        maxKills = 160,
     },
     lvl15 = {
         --enemy1 = {speed = 90, maxTime = 1},
@@ -463,8 +451,7 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 170,
-        maxKills = 0,
+        maxKills = 170,
     }
     }
     Data.__index = Data
