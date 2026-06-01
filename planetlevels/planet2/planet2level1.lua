@@ -46,12 +46,13 @@ local a = true
 local b = true
 function Planet2level1.new()
    local self = setmetatable({}, Planet2level1)
+   Data.currentlvl = 4
    return self
 end
 function Planet2level1:update(dt)
    if Data.player.lifepoints <= 0 then
       Data.currentState = "gameovermenu"
-   end 
+   end
    if Data.player.deadgameenemies >= Data.lvl4.maxKills then
       Data.lvl4.completed = true
    end

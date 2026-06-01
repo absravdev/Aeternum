@@ -45,6 +45,7 @@ local b = true
 local woke = false
 function Planet5level3.new()
    local self = setmetatable({}, Planet5level3)
+   Data.currentlvl = 15
    return self
 end
 function Planet5level3:update(dt)

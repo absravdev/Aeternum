@@ -2,7 +2,7 @@ Star = {}
 Star.__index = Star
 local sprites = {}
 sprites.zombie = love.graphics.newImage('sprites/star.png')
-local maxTime = 2
+local maxTime = 0.2
 local timer = maxTime
 function Star:SpawnType1(stars, speed)
     local star = {}
@@ -31,7 +31,7 @@ function Star:update(stars, speed, dt)
     timer = timer - dt
     if timer <= 0 then 
           Star:SpawnType1(stars, speed)
-          maxTime = math.random() * 10 + 5
+          maxTime = math.random() * 0.1 + 0.6
           timer = maxTime
     end 
     for i=#stars,1,-1 do

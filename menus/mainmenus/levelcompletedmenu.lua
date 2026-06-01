@@ -3,7 +3,6 @@ LevelCompletedMenu.__index = LevelCompletedMenu
 local AudioManager = require("audio/audiomanager")
 local soundManager = AudioManager.new()
 local alienskilled
-local cometsintercepted
 local pointscalculator
 local sprite = love.graphics.newImage("sprites/buttons/buttons.png")
 local font2 = love.graphics.newFont("fonts/alien.ttf", 120)
@@ -22,109 +21,79 @@ function LevelCompletedMenu:draw()
     end
     if Data.lvl == 1 and Data.lvl1.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl1.deadgameenemies = alienskilled
-        Data.lvl1.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl1.deadgameenemies+(Data.lvl1.cometsintercepted*3)+(Data.lvl1.lifepointsgained*2))*3)
         Data.lvl1.points = pointscalculator
     elseif Data.lvl == 2 and Data.lvl2.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl2.deadgameenemies = alienskilled
-        Data.lvl2.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl2.deadgameenemies+(Data.lvl2.cometsintercepted*3)+(Data.lvl2.lifepointsgained*2))*3)
         Data.lvl2.points = pointscalculator 
     elseif Data.lvl == 3 and Data.lvl3.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl3.deadgameenemies = alienskilled
-        Data.lvl3.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl3.deadgameenemies+(Data.lvl3.cometsintercepted*3)+(Data.lvl3.lifepointsgained*2))*3)
         Data.lvl3.points = pointscalculator
     elseif Data.lvl == 4 and Data.lvl4.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl4.deadgameenemies = alienskilled
-        Data.lvl4.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl4.deadgameenemies+(Data.lvl4.cometsintercepted*3)+(Data.lvl4.lifepointsgained*2))*3)
         Data.lvl4.points = pointscalculator
         local a = true
     elseif Data.lvl == 5 and Data.lvl5.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl5.deadgameenemies = alienskilled
-        Data.lvl5.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl5.deadgameenemies+(Data.lvl5.cometsintercepted*3)+(Data.lvl5.lifepointsgained*2))*3)
         Data.lvl5.points = pointscalculator
         local a = true
     elseif Data.lvl == 6 and Data.lvl6.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl6.deadgameenemies = alienskilled
-        Data.lvl6.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl6.deadgameenemies+(Data.lvl6.cometsintercepted*3)+(Data.lvl6.lifepointsgained*2))*3)
         Data.lvl6.points = pointscalculator
     elseif Data.lvl == 7 and Data.lvl7.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl7.deadgameenemies = alienskilled
-        Data.lvl7.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl7.deadgameenemies+(Data.lvl7.cometsintercepted*3)+(Data.lvl7.lifepointsgained*2))*3)
         Data.lvl7.points = pointscalculator
     elseif Data.lvl == 8 and Data.lvl8.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl8.deadgameenemies = alienskilled
-        Data.lvl8.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl8.deadgameenemies+(Data.lvl8.cometsintercepted*3)+(Data.lvl8.lifepointsgained*2))*3)
         Data.lvl8.points = pointscalculator
     elseif Data.lvl == 9 and Data.lvl9.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl9.deadgameenemies = alienskilled
-        Data.lvl9.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl9.deadgameenemies+(Data.lvl9.cometsintercepted*3)+(Data.lvl9.lifepointsgained*2))*3)
         Data.lvl9.points = pointscalculator
     elseif Data.lvl == 10 and Data.lvl10.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl10.deadgameenemies = alienskilled
-        Data.lvl10.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl10.deadgameenemies+(Data.lvl10.cometsintercepted*3)+(Data.lvl10.lifepointsgained*2))*3)
         Data.lvl10.points = pointscalculator
     elseif Data.lvl == 11 and Data.lvl11.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl11.deadgameenemies = alienskilled
-        Data.lvl11.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl11.deadgameenemies+(Data.lvl11.cometsintercepted*3)+(Data.lvl11.lifepointsgained*2))*3)
         Data.lvl11.points = pointscalculator
     elseif Data.lvl == 12 and Data.lvl12.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl12.deadgameenemies = alienskilled
-        Data.lvl12.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl12.deadgameenemies+(Data.lvl12.cometsintercepted*3)+(Data.lvl12.lifepointsgained*2))*3)
         Data.lvl12.points = pointscalculator
     elseif Data.lvl == 13 and Data.lvl13.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl13.deadgameenemies = alienskilled
-        Data.lvl13.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl13.deadgameenemies+(Data.lvl13.cometsintercepted*3)+(Data.lvl13.lifepointsgained*2))*3)
         Data.lvl13.points = pointscalculator
     elseif Data.lvl == 14 and Data.lvl14.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl14.deadgameenemies = alienskilled
-        Data.lvl14.cometsintercepted = cometsintercepted
         pointscalculator = ((Data.lvl14.deadgameenemies+(Data.lvl14.cometsintercepted*3)+(Data.lvl14.lifepointsgained*2))*3)
         Data.lvl14.points = pointscalculator
     elseif Data.lvl == 15 and Data.lvl15.completed then
         alienskilled = Data.player.deadgameenemies
-        cometsintercepted = Data.player.cometsintercepted
         Data.lvl15.deadgameenemies = alienskilled
-        Data.lvl15.cometsintercepted = cometsintercepted
         pointscalculator = (Data.lvl15.deadgameenemies+(Data.lvl15.cometsintercepted*3)+(Data.lvl15.lifepointsgained*2)*3)
         Data.lvl15.points = pointscalculator
     end

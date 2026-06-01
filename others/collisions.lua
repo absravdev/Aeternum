@@ -1,6 +1,7 @@
 Collisions = {}
 Collisions.__index = Collisions
 local AudioManager = require("audio/audiomanager")
+local Data = require("others/data")
 local soundManager = AudioManager.new()
 function Collisions:EnemyPlayer(zombies1, zombies2, zombies3, zombies4, zombies5, zombies6, player, dt)
     local bombradius
@@ -182,7 +183,38 @@ function Collisions:StarCollisions(stars, player, enemy1, enemy2, enemy3, enemy4
         s.y = s.y + math.sin(s.direction) * s.speed * dt
         if self:distanceBetween(s.x, s.y, player.x, player.y) < 30 then
             s.dead = true
-            Data.player.cometsintercepted = Data.player.cometsintercepted + 1
+            if Data.currentlvl == 1 then
+                Data.lvl1.cometsintercepted = Data.lvl1.cometsintercepted + 1
+            elseif Data.currentlvl == 2 then
+                Data.lvl2.cometsintercepted = Data.lvl2.cometsintercepted + 1
+            elseif Data.currentlvl == 3 then
+                Data.lvl3.cometsintercepted = Data.lvl3.cometsintercepted + 1
+            elseif Data.currentlvl == 4 then
+                Data.lvl4.cometsintercepted = Data.lvl4.cometsintercepted + 1
+            elseif Data.currentlvl == 5 then
+                Data.lvl5.cometsintercepted = Data.lvl5.cometsintercepted + 1
+            elseif Data.currentlvl == 6 then
+                Data.lvl6.cometsintercepted = Data.lvl6.cometsintercepted + 1
+            elseif Data.currentlvl == 7 then
+                Data.lvl7.cometsintercepted = Data.lvl7.cometsintercepted + 1
+            elseif Data.currentlvl == 8 then
+                Data.lvl8.cometsintercepted = Data.lvl8.cometsintercepted + 1
+            elseif Data.currentlvl == 9 then
+                Data.lvl9.cometsintercepted = Data.lvl9.cometsintercepted + 1
+            elseif Data.currentlvl == 10 then
+                Data.lvl10.cometsintercepted = Data.lvl10.cometsintercepted + 1
+            elseif Data.currentlvl == 11 then
+                Data.lvl11.cometsintercepted = Data.lvl11.cometsintercepted + 1
+            elseif Data.currentlvl == 12 then
+                Data.lvl12.cometsintercepted = Data.lvl12.cometsintercepted + 1
+            elseif Data.currentlvl == 13 then
+                Data.lvl13.cometsintercepted = Data.lvl13.cometsintercepted + 1
+            elseif Data.currentlvl == 14 then
+                Data.lvl14.cometsintercepted = Data.lvl14.cometsintercepted + 1
+            elseif Data.currentlvl == 15 then
+                Data.lvl15.cometsintercepted = Data.lvl15.cometsintercepted + 1
+            end
+            Data.player.totalcomets = Data.player.totalcomets + 1
         end
         for _, enemyGroup in ipairs({enemy1, enemy2, enemy3, enemy4, enemy5, enemy6}) do
             for j,e in ipairs(enemyGroup) do

@@ -46,6 +46,7 @@ local a = true
 local b = true
 function Planet5level1.new()
    local self = setmetatable({}, Planet5level1)
+   Data.currentlvl = 13
    return self
 end
 function Planet5level1:update(dt)
