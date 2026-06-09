@@ -5,6 +5,7 @@ local soundManager = AudioManager.new()
 local bombiconsprite = love.graphics.newImage("sprites/icon/bomb.png")
 local shieldiconsprite = love.graphics.newImage("sprites/icon/shield.png")
 local guniconsprite = love.graphics.newImage("sprites/icon/gun.png")
+
 function Powers.new(shieldlvl, gunlvl, bomblvl, firerate)
    local self = setmetatable({}, Powers)
    if shieldlvl == 1 then
@@ -32,25 +33,25 @@ function Powers.new(shieldlvl, gunlvl, bomblvl, firerate)
    self.gunCooldownMax = Data.gun.lvl1.CooldownMax
    self.gunCooldown = Data.gun.lvl1.Cooldown
    self.gunTimerMax = Data.gun.lvl1.TimerMax
-   self.shootGunTimerMax = Data.gun.lvl1.shootTimerMax 
+   self.shootGunTimerMax = Data.gun.lvl1.shootTimerMax
    self.gunTimer = self.gunTimerMax
    elseif gunlvl == 2 then
    self.gunCooldownMax = Data.gun.lvl2.CooldownMax
    self.gunCooldown = Data.gun.lvl2.Cooldown
    self.gunTimerMax = Data.gun.lvl2.TimerMax
-   self.shootGunTimerMax = Data.gun.lvl2.shootTimerMax 
+   self.shootGunTimerMax = Data.gun.lvl2.shootTimerMax
    self.gunTimer = self.gunTimerMax
    elseif gunlvl == 3 then
    self.gunCooldownMax =  Data.gun.lvl3.CooldownMax
    self.gunCooldown = Data.gun.lvl3.Cooldown
    self.gunTimerMax = Data.gun.lvl3.TimerMax
-   self.shootGunTimerMax = Data.gun.lvl3.shootTimerMax 
+   self.shootGunTimerMax = Data.gun.lvl3.shootTimerMax
    self.gunTimer = self.gunTimerMax
    elseif gunlvl == 4 then
    self.gunCooldownMax =  Data.gun.lvl4.CooldownMax
    self.gunCooldown = Data.gun.lvl4.Cooldown
    self.gunTimerMax = Data.gun.lvl4.TimerMax
-   self.shootGunTimerMax = Data.gun.lvl4.shootTimerMax 
+   self.shootGunTimerMax = Data.gun.lvl4.shootTimerMax
    self.gunTimer = self.gunTimerMax
    end
    if bomblvl == 1 then
@@ -88,8 +89,11 @@ function Powers.new(shieldlvl, gunlvl, bomblvl, firerate)
       self.shootTimer = self.shootTimerMax
    end
    self.canShoot = true
+   self.shootReleased = true   -- AÑADIDO (antes "mouseReleased", sin inicializar)
+   self.owner = nil            -- NUEVO: el jugador dueño de estos poderes (lo fija Fire)
    return self
 end
+
 function Powers:update(dt)
    if self.shieldCooldown > 0 then
       self.shieldCooldown = self.shieldCooldown - dt
@@ -98,7 +102,8 @@ function Powers:update(dt)
       self.shieldTimer = self.shieldTimer - dt
    end
    if self.shieldTimer <= 0 then
-      Data.shield.active = false
+      if self.owner then self.owner.shieldActive = false end
+      Data.shield.active = false   -- espejo temporal (enemy2/3/5/6 todavía lo leen)
    end
    if not self.canShoot then
       self.shootTimer = self.shootTimer - dt
@@ -113,6 +118,7 @@ function Powers:update(dt)
       self.gunTimer = self.gunTimer - dt
    end
    if self.gunTimer <= 0 then
+      if self.owner then self.owner.gunActive = false end
       Data.gun.active = false
    end
    if self.bombCooldown > 0 then
@@ -122,42 +128,59 @@ function Powers:update(dt)
       self.bombTimer = self.bombTimer - dt
    end
    if self.bombTimer <= 0 then
+      if self.owner then self.owner.bombActive = false end
       Data.bomb.active = false
    end
 end
-function Powers:Fire(player, bullets)
-   if love.mouse.isDown(1) and self.canShoot and self.mouseReleased then
+
+-- input (opcional): { shoot, gun, shield, bomb = booleanos }
+-- Si no se pasa, se lee de raton/teclado (comportamiento original).
+function Powers:Fire(player, bullets, input)
+   if not input then
+      input = {
+         shoot  = love.mouse.isDown(1),
+         gun    = love.mouse.isDown(2),
+         shield = love.keyboard.isDown('e'),
+         bomb   = love.keyboard.isDown('space'),
+      }
+   end
+   self.owner = player   -- recuerda de quién son estos poderes (lo usa update)
+   if input.shoot and self.canShoot and self.shootReleased then
       PlayerBullets:spawnBullet(player, bullets)
       soundManager:playSound(4)
       self.canShoot = false
       self.shootTimer = self.shootTimerMax
-      self.mouseReleased = false
+      self.shootReleased = false
    end
-   if not love.mouse.isDown(1) then
-      self.mouseReleased = true
+   if not input.shoot then
+      self.shootReleased = true
    end
-   if love.keyboard.isDown('e') and not Data.shield.active and self.shieldCooldown <= 0 then
-      Data.shield.active = true
+   if input.shield and not player.shieldActive and self.shieldCooldown <= 0 then
+      player.shieldActive = true
+      Data.shield.active = true   -- espejo temporal
       self.shieldTimer = self.shieldTimerMax
       self.shieldCooldown = self.shieldCooldownMax
    end
-   if love.mouse.isDown(2) and not Data.gun.active and self.gunCooldown <= 0 then
+   if input.gun and not player.gunActive and self.gunCooldown <= 0 then
       PlayerBullets:spawnBullet(player, bullets)
+      player.gunActive = true
       Data.gun.active = true
       self.gunTimer = self.gunTimerMax
       self.gunCooldown = self.gunCooldownMax
-    end
-    if Data.gun.active and self.canShoot then
+   end
+   if player.gunActive and self.canShoot then
       PlayerBullets:spawnBullet(player, bullets)
       self.canShoot = false
       self.shootTimer = self.shootGunTimerMax
-    end
-   if love.keyboard.isDown('space') and not Data.bomb.active and self.bombCooldown <= 0 then
+   end
+   if input.bomb and not player.bombActive and self.bombCooldown <= 0 then
+      player.bombActive = true
       Data.bomb.active = true
       self.bombTimer = self.bombTimerMax
       self.bombCooldown = self.bombCooldownMax
    end
 end
+
 function Powers:draw()
    if Data.currentState =="game" then
       if self.bombCooldown > 0 then

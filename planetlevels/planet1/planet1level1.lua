@@ -23,11 +23,6 @@ sprites.enemy5 = love.graphics.newImage('sprites/enemy/planet1enemy5.png')
 sprites.enemy6 = love.graphics.newImage('sprites/enemy/planet1enemy6.png')
 local player
 local gameEnemy1 = Enemy1.new(Data.lvl1.enemy1.maxTime)
---local gameEnemy2 = Enemy2.new(Data.lvl1.enemy2.maxTime)
---local gameEnemy3 = Enemy3.new(Data.lvl1.enemy3.maxTime)
---local gameEnemy4 = Enemy4.new(Data.lvl1.enemy4.maxTime)
---local gameEnemy5 = Enemy5.new(Data.lvl1.enemy5.maxTime)
---local gameEnemy6 = Enemy6.new(Data.lvl1.enemy6.maxTime)
 local enemy1 = {}
 local enemy2 = {}
 local enemy3 = {}
@@ -46,7 +41,7 @@ local a = true
 local b = true
 function Planet1level1.new()
    local self = setmetatable({}, Planet1level1)
-      Data.currentlvl = 1
+   Data.currentlvl = 1
    return self
 end
 function Planet1level1:update(dt)
@@ -69,11 +64,6 @@ function Planet1level1:update(dt)
    end
    player:update(dt)
    gameEnemy1:update(enemy1, Data.lvl1.enemy1.speed, dt)
-   --gameEnemy2:update(enemy2, player, playerbullets, Data.lvl1.enemy2.speed, Data.lvl1.enemy2.fireRate, Data.lvl1.enemy2.bulletSpeed, dt)
-   --gameEnemy3:update(enemy3, player, playerbullets, Data.lvl1.enemy3.speed, Data.lvl1.enemy3.fireRate, Data.lvl1.enemy3.bulletSpeed, dt)
-   --gameEnemy4:update(enemy4, Data.lvl1.enemy4.speed, dt)
-   --gameEnemy5:update(enemy5, player, playerbullets, Data.lvl1.enemy5.speed, Data.lvl1.enemy5.fireRate, Data.lvl1.enemy5.bulletSpeed, dt)
-   --gameEnemy6:update(enemy6, player, playerbullets, Data.lvl1.enemy6.speed, Data.lvl1.enemy6.fireRate, Data.lvl1.enemy6.bulletSpeed, dt)
    Star:update(star, 400, dt)
    Meteorite:update(meteorite, dt)
    powers:update(dt)
@@ -92,11 +82,6 @@ function Planet1level1:draw()
    player:draw()
    powers:draw(player, sprites)
    gameEnemy1:draw(enemy1, sprites.enemy1)
-   --gameEnemy2:draw(enemy2, sprites.enemy2)
-   --gameEnemy3:draw(enemy3, sprites.enemy3)
-   --gameEnemy4:draw(enemy4, sprites.enemy4)
-   --gameEnemy5:draw(enemy5, sprites.enemy5)
-   --gameEnemy6:draw(enemy6, sprites.enemy6)
    Star:draw(star)
    Meteorite:draw(meteorite)
 end

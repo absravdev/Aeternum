@@ -2,6 +2,7 @@ local Planet4PlanetMenu = {}
 Planet4PlanetMenu.__index = Planet4PlanetMenu
 local AudioManager = require("audio/audiomanager")
 local soundManager = AudioManager.new()
+local CoopLauncher = require("network/cooplauncher")
 local button = love.graphics.newImage("sprites/buttons/buttons.png")
 function Planet4PlanetMenu.new()
     local self = setmetatable({}, Planet4PlanetMenu)
@@ -23,6 +24,29 @@ function Planet4PlanetMenu:draw()
         end
     end
 end
+local function launch(planet, zone, lvlNumber, soloLevel, s)
+    -- no se puede rejugar un nivel ya superado: muestra "level completed" y no juega
+    local already = Data["lvl" .. lvlNumber]
+    if already and already.completed then
+        Data.lvl = lvlNumber
+        Data.currentlvl = lvlNumber
+        Data.player.deadgameenemies = already.deadgameenemies or 0
+        Data.levelbloq = false
+        Data.currentState = "levelcompletedmenu"
+        return
+    end
+    if CoopLauncher.isCoopActive() then
+        CoopLauncher.requestStart(planet, zone)
+    else
+        Data.levelbloq = false
+        Data.lvl = lvlNumber
+        Data.player.deadgameenemies = 0
+        Data.player.cometsintercepted = 0
+        Data.player.lifepointsgained = 0
+        Data.currentState = "game"
+        Data.currentLevel = s["game"][soloLevel.planet][soloLevel.level]
+    end
+end
 function Planet4PlanetMenu:mousepressed(x,y,b,s)
     if b==1 then
         for i,v in ipairs(self.buttons) do
@@ -30,40 +54,22 @@ function Planet4PlanetMenu:mousepressed(x,y,b,s)
                 if (x-v.x)^2 + (y-v.y)^2 < v.r^2 then
                     if v.text=="zone 1" then
                         if Data.lvl1.completed and Data.lvl2.completed and Data.lvl3.completed and Data.lvl4.completed and Data.lvl5.completed and Data.lvl6.completed and Data.lvl7.completed and Data.lvl8.completed and Data.lvl9.completed then
-                        soundManager:playSound(1)
-                            Data.levelbloq = false
-                            Data.lvl = 10
-                            Data.player.deadgameenemies = 0
-                            Data.player.cometsintercepted = 0
-                            Data.player.lifepointsgained = 0
-                            Data.currentState = "game"
-                            Data.currentLevel = s[Data.currentState].planet4.level1
+                            soundManager:playSound(1)
+                            launch(4, 1, 10, {planet="planet4", level="level1"}, s)
                         else
                             Data.levelbloq = true
                         end
                     elseif v.text=="zone 2" then
                         if Data.lvl1.completed and Data.lvl2.completed and Data.lvl3.completed and Data.lvl4.completed and Data.lvl5.completed and Data.lvl6.completed and Data.lvl7.completed and Data.lvl8.completed and Data.lvl9.completed and Data.lvl10.completed then
-                        soundManager:playSound(1)
-                            Data.levelbloq = false
-                            Data.lvl = 11
-                            Data.player.deadgameenemies = 0
-                            Data.player.cometsintercepted = 0
-                            Data.player.lifepointsgained = 0
-                            Data.currentState = "game"
-                            Data.currentLevel = s[Data.currentState].planet4.level2
-                        else 
+                            soundManager:playSound(1)
+                            launch(4, 2, 11, {planet="planet4", level="level2"}, s)
+                        else
                             Data.levelbloq = true
                         end
                     elseif v.text=="zone 3" then
                         if Data.lvl1.completed and Data.lvl2.completed and Data.lvl3.completed and Data.lvl4.completed and Data.lvl5.completed and Data.lvl6.completed and Data.lvl7.completed and Data.lvl8.completed and Data.lvl9.completed and Data.lvl10.completed and Data.lvl11.completed then
-                        soundManager:playSound(1)
-                            Data.levelbloq = false
-                            Data.lvl = 12
-                            Data.player.deadgameenemies = 0
-                            Data.player.cometsintercepted = 0
-                            Data.player.lifepointsgained = 0
-                            Data.currentState = "game"
-                            Data.currentLevel = s[Data.currentState].planet4.level3
+                            soundManager:playSound(1)
+                            launch(4, 3, 12, {planet="planet4", level="level3"}, s)
                         else
                             Data.levelbloq = true
                         end

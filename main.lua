@@ -2,6 +2,7 @@ Data = require("others/data")
 local states = require("menus/mainmenus/states")
 local menus = require("menus/mainmenus/menus")
 local Leaderboard = require("network/leaderboard")
+local CoopLauncher = require("network/cooplauncher")
 function love.load()
     love.window.setFullscreen(true)
     love.keyboard.setTextInput(true)
@@ -19,6 +20,7 @@ function love.load()
     end
 end
 function love.update(dt)
+    CoopLauncher.update()          -- bombea la red cada frame
     Leaderboard.update()
     if states[Data.currentState] and states[Data.currentState].update then
         states[Data.currentState].update(dt)
@@ -32,19 +34,23 @@ function love.draw()
     elseif Data.currentLevel and Data.currentLevel.draw then
         Data.currentLevel.draw()
     end
+    CoopLauncher.draw()            -- overlay del lanzador encima de todo
 end
 function love.mousepressed(x, y, button)
+    if CoopLauncher.mousepressed(x, y, button) then return end   -- el panel online es modal
     if Data.currentState and menus[Data.currentState] then
         menus[Data.currentState]:mousepressed(x, y, button, states)
     end
 end
 function love.textinput(t)
+    if CoopLauncher.textinput(t) then return end
     if Data.currentState and menus[Data.currentState] and menus[Data.currentState].textinput then
         menus[Data.currentState]:textinput(t)
     end
 end
 
 function love.keypressed(key)
+    if CoopLauncher.keypressed(key) then return end
     if key == 'f' then
         local fullscreen = not love.window.getFullscreen()
         love.window.setFullscreen(fullscreen)

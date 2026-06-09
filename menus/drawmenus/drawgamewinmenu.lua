@@ -3,6 +3,7 @@ DrawGameWinMenu.__index = DrawGameWinMenu
 local AudioManager = require("audio/audiomanager")
 local soundManager = AudioManager.new()
 local Leaderboard = require("network/leaderboard")
+local CoopLauncher = require("network/cooplauncher")
 local sprite = love.graphics.newImage("sprites/buttons/buttons.png")
 local font2 = love.graphics.newFont("fonts/alien.ttf", 120)
 local font = love.graphics.newFont("fonts/alien.ttf", 25)
@@ -15,7 +16,7 @@ function DrawGameWinMenu.new()
     return self
 end
 function DrawGameWinMenu:draw()
-    if not submitted then
+    if not submitted and CoopLauncher.canSubmit() then
         Leaderboard.submitRun(Data:computeRun())
         submitted = true
     end

@@ -2,6 +2,7 @@ local MainMenu = {}
 MainMenu.__index = MainMenu
 local AudioManager = require("audio/audiomanager")
 local soundManager = AudioManager.new()
+local CoopLauncher = require("network/cooplauncher")
 function MainMenu.new()
     local self = setmetatable({}, MainMenu)
     local button = love.graphics.newImage("sprites/buttons/buttons.png")
@@ -10,6 +11,7 @@ function MainMenu.new()
         {x = 100, y = 200, w = 200, h = 50, text = "spaceship", sprite = button},
         {x = 100, y = 300, w = 200, h = 50, text = "options", sprite = button},
         {x = 100, y = 400, w = 200, h = 50, text = "records", sprite = button},
+        {x = 100, y = 500, w = 200, h = 50, text = "online", sprite = button},
     }
     return self
 end
@@ -39,6 +41,9 @@ function MainMenu:mousepressed(x,y,b,s)
                     Leaderboard.view = "general"
                     Leaderboard.fetchGeneral(10)
                     Data.currentState = "leaderboardmenu"
+                elseif v.text=="online" then
+                    soundManager:playSound(1)
+                    CoopLauncher.open()   -- abre el panel host / unirse
                 end
             end
         end

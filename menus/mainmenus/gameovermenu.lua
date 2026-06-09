@@ -2,6 +2,7 @@ local GameOverMenu = {}
 GameOverMenu.__index = GameOverMenu
 local AudioManager = require("audio/audiomanager")
 local Leaderboard = require("network/leaderboard")
+local CoopLauncher = require("network/cooplauncher")
 local Data = require("others/data")
 local soundManager = AudioManager.new()
 local sprite = love.graphics.newImage("sprites/buttons/buttons.png")
@@ -22,7 +23,7 @@ function GameOverMenu:draw()
     end
     love.graphics.setFont(font2)
     if Data.lvl15.completed then
-        if not submitted then
+        if not submitted and CoopLauncher.canSubmit() then
             Leaderboard.submitRun(Data:computeRun())
             submitted = true
         end

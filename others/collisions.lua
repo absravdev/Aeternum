@@ -16,12 +16,12 @@ function Collisions:EnemyPlayer(zombies1, zombies2, zombies3, zombies4, zombies5
     end
     for _, zombies in ipairs({zombies1, zombies2, zombies3, zombies4, zombies5, zombies6}) do
         for i,z in ipairs(zombies) do
-            if Data.bomb.active and self:distanceBetween(z.x, z.y, player.x, player.y) < bombradius then
+            if player.bombActive and self:distanceBetween(z.x, z.y, player.x, player.y) < bombradius then
                 z.dead = true
             end
             if self:distanceBetween(z.x, z.y, player.x, player.y) < 30 then
                 if not player.invulnerable then
-                    if Data.shield.active then
+                    if player.shieldActive then
                         z.dead = true
                     else
                         Data.player.lifepoints = Data.player.lifepoints - 1
@@ -176,12 +176,11 @@ function Collisions:EnemyBulletPlayer(player, enemy2bullets, enemy3bullets, enem
             Data.player.injured = true
         end
     end
-end 
-function Collisions:StarCollisions(stars, player, enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, playerbullets, enemy2bullets, enemy3bullets, enemy5bullets, enemy6bullets, dt)
+end
+
+function Collisions:StarPlayer(stars, player)
     for i,s in ipairs(stars) do
-        s.x = s.x + math.cos(s.direction) * s.speed * dt
-        s.y = s.y + math.sin(s.direction) * s.speed * dt
-        if self:distanceBetween(s.x, s.y, player.x, player.y) < 30 then
+        if not s.dead and self:distanceBetween(s.x, s.y, player.x, player.y) < 30 then
             s.dead = true
             if Data.currentlvl == 1 then
                 Data.lvl1.cometsintercepted = Data.lvl1.cometsintercepted + 1
@@ -216,6 +215,13 @@ function Collisions:StarCollisions(stars, player, enemy1, enemy2, enemy3, enemy4
             end
             Data.player.totalcomets = Data.player.totalcomets + 1
         end
+    end
+end
+-- Movimiento de estrellas + colision con enemigos/balas (UNA vez por frame).
+function Collisions:StarMovement(stars, enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, playerbullets, enemy2bullets, enemy3bullets, enemy5bullets, enemy6bullets, dt)
+    for i,s in ipairs(stars) do
+        s.x = s.x + math.cos(s.direction) * s.speed * dt
+        s.y = s.y + math.sin(s.direction) * s.speed * dt
         for _, enemyGroup in ipairs({enemy1, enemy2, enemy3, enemy4, enemy5, enemy6}) do
             for j,e in ipairs(enemyGroup) do
                 if self:distanceBetween(s.x, s.y, e.x, e.y) < 30 then
@@ -240,7 +246,7 @@ function Collisions:MeteoriteCollisions(meteorites, player, enemy1, enemy2, enem
     for i,m in ipairs(meteorites) do
         if m.drawTimer <= 0 and self:distanceBetween(m.x, m.y, player.x, player.y) < m.radius then
             if player.lifeLossTimer <= 0 then
-                if not Data.shield.active then
+                if not player.shieldActive then
                 Data.player.lifepoints = Data.player.lifepoints - 50
                 soundManager:playSound(4)
                 end
@@ -270,7 +276,8 @@ function Collisions:CheckAllCollisions(player, playerbullets, enemy1, enemy2, en
     self:PlayerBulletEnemy(playerbullets, enemy1, enemy2, enemy3, enemy4, enemy5, enemy6)
     self:BulletBullet(playerbullets, enemy2bullets, enemy3bullets, enemy5bullets, enemy6bullets)
     self:EnemyBulletPlayer(player, enemy2bullets, enemy3bullets, enemy5bullets, enemy6bullets)
-    self:StarCollisions(stars, player, enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, playerbullets, enemy2bullets, enemy3bullets, enemy5bullets, enemy6bullets, dt)
+    self:StarMovement(stars, enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, playerbullets, enemy2bullets, enemy3bullets, enemy5bullets, enemy6bullets, dt)
+    self:StarPlayer(stars, player)
     self:MeteoriteCollisions(meteorite, player, enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, playerbullets, enemy2bullets, enemy3bullets, enemy5bullets, enemy6bullets, dt)
 end
 function Collisions:distanceBetween(x1, y1, x2, y2)

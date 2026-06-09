@@ -269,7 +269,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 50,
+        --maxKills = 50,
+        maxKills = 1,
     },
     lvl3 = { --be
         enemy1 = {speed = 130, maxTime = 1.3},
@@ -283,7 +284,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 60,
+        --maxKills = 60,
+        maxKills = 1,
     },
     lvl4 = { --be
         enemy1 = {speed = 100, maxTime = 1.2},
@@ -297,7 +299,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 70,
+        --maxKills = 70,
+        maxKills = 1,
     },
     lvl5 = { --be
         enemy1 = {speed = 100, maxTime = 4},
@@ -311,7 +314,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 80,
+        --maxKills = 80,
+        maxKills = 1,
     },
     lvl6 = {--be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -325,7 +329,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 90,
+        --maxKills = 90,
+        maxKills = 1,
     },
     lvl7 = { --be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -339,7 +344,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 100,
+        --maxKills = 100,
+        maxKills = 1,
     },
     lvl8 = {--be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -353,7 +359,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 110,
+        --maxKills = 110,
+        maxKills = 1,
     },
     lvl9 = {--be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -367,7 +374,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 110,
+        --maxKills = 110,
+        maxKills = 1,
     },
     lvl10 = {
         enemy1 = {speed = 100, maxTime = 1},
@@ -381,7 +389,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 120,
+        --maxKills = 120,
+        maxKills = 1,
     },
     lvl11 = {
         --enemy1 = {speed = 90, maxTime = 1},
@@ -395,7 +404,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 130,
+        --maxKills = 130,
+        maxKills = 1,
     },
     lvl12 = {
         --enemy1 = {speed = 90, maxTime = 1},
@@ -409,7 +419,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 140,
+        --maxKills = 140,
+        maxKills = 1,
     },
     lvl13 = {
         enemy1 = {speed = 100, maxTime = 1.8},
@@ -423,7 +434,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 150,
+        --maxKills = 150,
+        maxKills = 1,
     },
     lvl14 = {
         enemy1 = {speed = 100, maxTime = 1},
@@ -437,7 +449,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 160,
+        --maxKills = 160,
+        maxKills = 1,
     },
     lvl15 = {
         --enemy1 = {speed = 90, maxTime = 1},
@@ -451,7 +464,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        maxKills = 170,
+        --maxKills = 170,
+        maxKills = 1,
     }
     }
     Data.__index = Data
@@ -461,14 +475,38 @@ Data = {
     function Data:setCurrentShield(shiled)
         self.currentShiled = shiled
     end
+    local _okutf8, _utf8 = pcall(require, "utf8")
+    -- Recorta un nombre a 8 caracteres (UTF-8) para el leaderboard. Asi un gracioso
+    -- no puede meter un nombre larguisimo en los records.
+    function Data:shortName(s)
+        s = tostring(s or "")
+        if _okutf8 and _utf8 and _utf8.offset then
+            local e = _utf8.offset(s, 9)        -- byte donde empieza el 9o caracter
+            if e then return s:sub(1, e - 1) end
+            return s
+        end
+        return s:sub(1, 8)                      -- fallback por bytes si no hay utf8
+    end
     function Data:computeRun()
         local totalMoney = 0
         for i = 1, 15 do
             local lvl = self["lvl" .. i]
             totalMoney = totalMoney + ((lvl and lvl.points) or 0)
         end
+        -- nombre que se guarda en la base de datos (max 8 caracteres por jugador)
+        local name
+        if self.coop and self.coopName then
+            local a, b = self.coopName:match("^(.-) & (.+)$")   -- "A & B"
+            if a and b then
+                name = self:shortName(a) .. " & " .. self:shortName(b)
+            else
+                name = self:shortName(self.coopName)
+            end
+        else
+            name = self:shortName(self.player.name)
+        end
         return {
-            name = self.player.name,
+            name = name,
             score = totalMoney,
             aliens = self.player.deadtotalenemies,
             comets  = self.player.totalcomets,

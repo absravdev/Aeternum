@@ -37,18 +37,16 @@ function LeaderboardMenu:draw()
     love.graphics.print("#",       400, 170)
     love.graphics.print("NAME",    450, 170)
     love.graphics.print("LIFE",    780, 170)
-    love.graphics.print("SCORE",   940, 170)
-    love.graphics.print("ALIENS", 1110, 170)
-    love.graphics.print("COMETS", 1290, 170)
+    love.graphics.print("ALIENS", 940, 170)
+    love.graphics.print("COMETS", 1110, 170)
 
     local y = 220
     for i, e in ipairs(Leaderboard.general or {}) do
         love.graphics.print(i,                           400, y)
         love.graphics.print(tostring(e.name),            450, y)
         love.graphics.print(tostring(e.lifepoints or 0), 780, y)
-        love.graphics.print(tostring(e.score or 0),      940, y)
-        love.graphics.print(tostring(e.aliens or 0),    1110, y)
-        love.graphics.print(tostring(e.comets or 0),    1290, y)
+        love.graphics.print(tostring(e.aliens or 0),    940, y)
+        love.graphics.print(tostring(e.comets or 0),    1110, y)
         y = y + 40
     end
 end
