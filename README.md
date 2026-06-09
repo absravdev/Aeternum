@@ -1,6 +1,6 @@
 # Aeternum
 
-> My first complete game, built in Love2D / Lua. A top-down shooter with 15 levels across 5 planets, an upgrade system and a shop. The **original game** is uploaded exactly as I left it when I finished it in 2023, with no later refactoring, an honest snapshot of where I was as a developer back then. The one thing I added years later is an **online leaderboard**, kept separate and documented in [its own section](#online-leaderboard-added-in-2026).
+> My first complete game, built in Love2D / Lua. A top-down shooter with 15 levels across 5 planets, an upgrade system and a shop. The **original game** is uploaded exactly as I left it when I finished it in 2023, with no later refactoring, an honest snapshot of where I was as a developer back then. The things I added years later are an **online leaderboard** and a **local co-op mode**, kept separate and documented in [their](#online-leaderboard-added-in-2026) [own](#local-co-op-added-in-2026) sections.
 
 <p align="center">
   <a href="https://youtu.be/rTFi5HzEdAk?si=Oq6bFmgcYhf6JiBt">
@@ -29,7 +29,7 @@ Aeternum is the first serious project I ever finished as a developer. I built it
 
 That second part is documented below, in [Known bugs and technical debt](#known-bugs-and-technical-debt) and [What I'd do differently today](#what-id-do-differently-today).
 
-**One later addition:** in 2026 I came back and bolted an [online leaderboard](#online-leaderboard-added-in-2026) onto the game, as an exercise in adding networking and a backend to an existing codebase. That's the only thing touched after 2023, and it did modify a handful of the original files. I've kept it clearly labelled so the 2023 snapshot stays legible, the rest of the game's structure and rough edges are untouched on purpose.
+**Two later additions:** in 2026 I came back and bolted networking onto the game, as an exercise in extending an existing codebase. First an [online leaderboard](#online-leaderboard-added-in-2026), which meant adding an HTTP client layer and standing up a separate backend. Then a [local co-op mode](#local-co-op-added-in-2026) for 2 players over the same network, which meant building a small real-time multiplayer layer on top of a game that was never designed for it. Those are the only things touched after 2023, and they did modify a handful of the original files. I've kept them clearly labelled so the 2023 snapshot stays legible, the rest of the game's structure and rough edges are untouched on purpose.
 
 A note on credit: **the code is mine, the art and audio are not**, I used free-to-use assets from other creators. See [Credits](#credits) for details.
 
@@ -47,21 +47,41 @@ You pilot a ship defending its position against waves of enemies across differen
 - Music and sound effects with toggles
 - Complete menu system: planets, shop, options, game over, level cleared
 - **Online global leaderboard** (added in 2026) ranked by leftover health, see [its own section](#online-leaderboard-added-in-2026)
+- **Local co-op for 2 players** (added in 2026) over the same WiFi network, see [its own section](#local-co-op-added-in-2026)
 
 ## Online leaderboard (added in 2026)
 
 The original game was fully offline. Years later, as an exercise in adding networking to an existing codebase, I built a **global online leaderboard**: when you finish all 15 levels, your run is submitted to a server and ranked against everyone else's, ordered by **leftover health**, the more life you finish with, the higher you place. You can browse the global top from the leaderboard menu inside the game.
 
-This is the only part of the project touched after 2023. Wiring it in meant adding a small networking layer to the client and standing up a separate backend, and it did modify a few of the original files (`main.lua`, `others/data.lua`, and the game-over and leaderboard menus). Everything else is left as it was.
+Wiring it in meant adding a small networking layer to the client and standing up a separate backend, and it did modify a few of the original files (`main.lua`, `others/data.lua`, and the game-over and leaderboard menus). Everything else is left as it was.
 
 **Client side** (in this repo):
 
-- `network/leaderboard.lua`, a small client that talks to the server. HTTP requests run on a separate LÖVE thread (`love.thread`) so a slow or cold-starting server never freezes the game loop. It uses the bundled `https` module (available in LÖVE 11.3+) and `libs/json.lua` ([rxi/json.lua](https://github.com/rxi/json.lua)) for JSON encoding.
+- `network/leaderboard.lua`, a small client that talks to the server. HTTP requests run on a separate LÖVE thread (`love.thread`) so a slow or cold-starting server never freezes the game loop. It uses the `https` module bundled with LÖVE 12 and `libs/json.lua` ([rxi/json.lua](https://github.com/rxi/json.lua)) for JSON encoding.
 - On finishing the game, the run (name + leftover health + total kills + money) is submitted once, and the leaderboard menu fetches and renders the global top 10, sorted by health.
 
 **Server side** (separate repo): a small **Node.js + Express** API backed by **PostgreSQL** (hosted on **Neon**), deployed for free on **Render**. It exposes two endpoints, one to submit a run and one to read the ranked top N, and stores everything in a single `scores` table. The database connection string lives only as an environment variable on the host, never in the code.
 
 > Heads-up: the leaderboard endpoint is public and unauthenticated, which is fine for a hobby project but means scores aren't verified server-side. It's there for fun, not as a competitive ladder.
+
+## Local co-op (added in 2026)
+
+The second post-2023 addition: a **cooperative mode for 2 players over the same network** (same WiFi, or same PC with two instances). One player hosts from the ONLINE button in the main menu, the other joins by typing the host's local IP, and the full 15-level campaign becomes playable with two ships sharing one pot of dark matter. Both players' names appear together on the run ("HOST & CLIENT"), and if they beat the game, only the host submits to the leaderboard so the run isn't counted twice.
+
+The interesting part is the architecture. Retrofitting multiplayer onto a single-player game is famously painful, so I picked the model that minimizes how much of the original code needs to be aware of the network:
+
+- **Host-authoritative simulation.** The host runs the entire game exactly as in single player: enemy spawns, bullets, collisions, scoring. The client doesn't simulate anything. Each frame it sends only its **input** (movement keys, aim angle, fire/power buttons) to the host, and the host sends back a **snapshot** of the world state, which the client just draws. Because there's only ever one simulation, desync is impossible by construction, there's no state to reconcile.
+- **Transport: ENet** (reliable UDP, bundled with LÖVE, `require("enet")`). Snapshots and inputs go unsequenced, every frame, where a dropped packet doesn't matter because the next one supersedes it. Important one-shot events (level start, level end, shop purchases) go on the reliable channel so they're guaranteed and ordered.
+- **Shared economy without a server.** Dark matter is synced by broadcasting deltas: when either player spends in the shop, the other side is told to subtract the same amount. The host seeds the shared pot on connect.
+- **Clean session boundaries.** Connecting starts a fresh run for both players (progress and upgrades reset), and disconnecting, intentionally or by losing the other player, tears the session down and returns the game to its solo state, as if it had just been opened.
+
+Code-wise it's three new files, plus small hooks in `main.lua` and the planet menus:
+
+- `network/coop.lua`, the transport layer: connection lifecycle, message encoding (JSON over ENet), reliable vs unsequenced sends, ping.
+- `network/cooplauncher.lua`, the coordinator: host/join UI, ready-up handshake with loadout exchange, name exchange, shared-money sync, and a debug overlay (F3) with FPS, frame time and ping.
+- `planetlevels/coopengine.lua`, a generic engine that can run any of the 15 levels in co-op without duplicating the 15 level files.
+
+> Why LAN-only? Making this "click online and play with anyone over the internet" requires matchmaking plus a relay server running 24/7, which means permanent infrastructure (and a monthly bill) for a portfolio game. I prototyped and tested the internet path over a VPN during development, then deliberately scoped the shipped feature to LAN. If you want to play remotely anyway, a free mesh VPN like Tailscale or Radmin makes both PCs look like they're on the same network, and the game works over it unchanged.
 
 ## How to run it
 
@@ -69,13 +89,15 @@ This is the only part of the project touched after 2023. Wiring it in meant addi
 
 **[Download Aeternum on itch.io](https://YOUR-ITCH-USERNAME.itch.io/aeternum)**
 
-**From source (any platform).** You'll need [LÖVE 11.x](https://love2d.org/) installed (11.3+ recommended so the online leaderboard's `https` module is available), then run:
+**From source (any platform).** You'll need [LÖVE 12](https://love2d.org/) installed (currently distributed as a nightly build; the online leaderboard relies on its bundled `https` module), then run:
 
 ```bash
 love .
 ```
 
 Or drag the game folder onto the Love2D executable. A packaged build is also attached to each [GitHub release](../../releases).
+
+**Co-op:** both players run the game on the same network. One clicks ONLINE → Host and shares the local IP shown on screen; the other clicks ONLINE → Join and types it. To try it alone, run two instances on the same PC and join `127.0.0.1`.
 
 ## Controls
 
@@ -88,6 +110,7 @@ Or drag the game folder onto the Love2D executable. A packaged build is also att
 | Shield | `E` |
 | Bomb | `Space` |
 | Toggle fullscreen | `F` |
+| FPS/ping overlay | `F3` |
 
 ## Glitches and exploits
 
@@ -130,9 +153,9 @@ Aeternum/
 │   └── drawmenus/          # HUDs and stats
 ├── audio/                  # AudioManager and audio files
 ├── others/                 # Global Data, player, collisions, powers
-├── planetlevels/           # One file per level (planet1level1, planet1level2, ...)
+├── planetlevels/           # One file per level, plus coopengine.lua (added 2026)
 ├── spatialobjects/         # Stars and meteorites
-├── network/                # Online leaderboard client (added 2026)
+├── network/                # Leaderboard client and co-op networking (added 2026)
 └── libs/                   # Third-party libraries (json.lua)
 ```
 
@@ -147,7 +170,7 @@ I've reviewed this with hindsight. I'm listing them not to make excuses, but to 
 - **`Data:resetData()` is empty.** It's called from `states.lua` when entering several planets, but the function body was never implemented. That's why state between runs doesn't fully clean up (HP, player position, counters). This same gap is why the 2026 leaderboard couldn't offer a clean "play again", the game-over screen just exits, because resetting state properly would have meant fixing this first.
 - **Inverted comparison in a bullet-vs-bullet collision check.** In `collisions.lua`, the first check between player bullets and `enemy2` bullets uses `>` instead of `<`. Result: your bullets die when they're *far* from enemy2 bullets, not when they collide with them.
 - **The "gun" power-up sprites are copy-pasted from the shield.** All three variants (`gunlvl1/2/3sprite`) point to `shieldlvl1.png`.
-- **Dirty level state between runs.** Each level caches its `player`, enemy arrays, etc. in module-local variables. Since Lua caches `require`d modules, those locals live forever. The correct fix was the `resetData()` that was left unimplemented.
+- **Dirty level state between runs.** Each level caches its `player`, enemy arrays, etc. in module-local variables. Since Lua caches `require`d modules, those locals live forever. The correct fix was the `resetData()` that was left unimplemented. (Amusingly, the 2026 co-op mode had to solve this for real: starting or ending an online session performs the full state reset the original game never did.)
 - **`Data.windowWidth/Height` captured before fullscreen kicks in.** Evaluated when `data.lua` loads, before `main.lua` switches to fullscreen. Ends up holding the initial size from `conf.lua` (1450×750) instead of the actual monitor resolution.
 - **`Enemy1` has a `self.maxTime = 1 * self.maxTime`** which does nothing. It was probably meant to ramp up difficulty gradually.
 
@@ -182,7 +205,8 @@ None of this is going to be applied to the original game in this repo. It is wha
 **Game (client, this repo):**
 
 - **Language:** Lua 5.1 (the version Love2D ships with)
-- **Framework:** [LÖVE 11.x](https://love2d.org/)
+- **Framework:** [LÖVE 12](https://love2d.org/) (nightly; the original 2023 game was built on LÖVE 11.x and upgraded for the 2026 networking features)
+- **Co-op networking:** [ENet](http://enet.bespin.org/) (reliable UDP, bundled with LÖVE)
 
 **Leaderboard backend (added 2026, separate repo):**
 
