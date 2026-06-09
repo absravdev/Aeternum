@@ -87,7 +87,7 @@ Code-wise it's three new files, plus small hooks in `main.lua` and the planet me
 
 **Easiest, Windows, no setup needed.** Download the ready-to-play build from itch.io, unzip it, and run `Aeternum.exe`. Nothing to install.
 
-**[Download Aeternum on itch.io](https://YOUR-ITCH-USERNAME.itch.io/aeternum)**
+**[Download Aeternum on itch.io](https://absrav.itch.io/aeternum)**
 
 **From source (any platform).** You'll need [LÖVE 12](https://love2d.org/) installed (currently distributed as a nightly build; the online leaderboard relies on its bundled `https` module), then run:
 
