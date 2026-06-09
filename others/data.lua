@@ -269,8 +269,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 50,
-        maxKills = 1,
+        maxKills = 50,
+        --maxKills = 1,
     },
     lvl3 = { --be
         enemy1 = {speed = 130, maxTime = 1.3},
@@ -284,8 +284,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 60,
-        maxKills = 1,
+        maxKills = 60,
+        --maxKills = 1,
     },
     lvl4 = { --be
         enemy1 = {speed = 100, maxTime = 1.2},
@@ -299,8 +299,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 70,
-        maxKills = 1,
+        maxKills = 70,
+        --maxKills = 1,
     },
     lvl5 = { --be
         enemy1 = {speed = 100, maxTime = 4},
@@ -314,8 +314,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 80,
-        maxKills = 1,
+        maxKills = 80,
+        --maxKills = 1,
     },
     lvl6 = {--be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -329,8 +329,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 90,
-        maxKills = 1,
+        maxKills = 90,
+        --maxKills = 1,
     },
     lvl7 = { --be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -344,8 +344,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 100,
-        maxKills = 1,
+        maxKills = 100,
+        --maxKills = 1,
     },
     lvl8 = {--be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -359,8 +359,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 110,
-        maxKills = 1,
+        maxKills = 110,
+        --maxKills = 1,
     },
     lvl9 = {--be
         --enemy1 = {speed = 90, maxTime = 1},
@@ -374,8 +374,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 110,
-        maxKills = 1,
+        maxKills = 110,
+        --maxKills = 1,
     },
     lvl10 = {
         enemy1 = {speed = 100, maxTime = 1},
@@ -389,8 +389,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 120,
-        maxKills = 1,
+        maxKills = 120,
+        --maxKills = 1,
     },
     lvl11 = {
         --enemy1 = {speed = 90, maxTime = 1},
@@ -404,8 +404,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 130,
-        maxKills = 1,
+        maxKills = 130,
+        --maxKills = 1,
     },
     lvl12 = {
         --enemy1 = {speed = 90, maxTime = 1},
@@ -419,8 +419,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 140,
-        maxKills = 1,
+        maxKills = 140,
+        --maxKills = 1,
     },
     lvl13 = {
         enemy1 = {speed = 100, maxTime = 1.8},
@@ -434,8 +434,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 150,
-        maxKills = 1,
+        maxKills = 150,
+        --maxKills = 1,
     },
     lvl14 = {
         enemy1 = {speed = 100, maxTime = 1},
@@ -449,8 +449,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 160,
-        maxKills = 1,
+        maxKills = 160,
+        --maxKills = 1,
     },
     lvl15 = {
         --enemy1 = {speed = 90, maxTime = 1},
@@ -464,8 +464,8 @@ Data = {
         lifepointsgained = 0,
         points = 5,
         cometsintercepted = 0,
-        --maxKills = 170,
-        maxKills = 1,
+        maxKills = 170,
+        --maxKills = 1,
     }
     }
     Data.__index = Data
