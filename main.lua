@@ -20,7 +20,7 @@ function love.load()
     end
 end
 function love.update(dt)
-    CoopLauncher.update()          -- bombea la red cada frame
+    CoopLauncher.update()
     Leaderboard.update()
     if states[Data.currentState] and states[Data.currentState].update then
         states[Data.currentState].update(dt)
@@ -34,10 +34,10 @@ function love.draw()
     elseif Data.currentLevel and Data.currentLevel.draw then
         Data.currentLevel.draw()
     end
-    CoopLauncher.draw()            -- overlay del lanzador encima de todo
+    CoopLauncher.draw()
 end
 function love.mousepressed(x, y, button)
-    if CoopLauncher.mousepressed(x, y, button) then return end   -- el panel online es modal
+    if CoopLauncher.mousepressed(x, y, button) then return end
     if Data.currentState and menus[Data.currentState] then
         menus[Data.currentState]:mousepressed(x, y, button, states)
     end
