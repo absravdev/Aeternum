@@ -1,9 +1,3 @@
--- bullets/playerbullets.lua
--- Cambio: bullet.direction = player.aim (antes era el if Data.lvl==1..15 con
--- PlanetXlevelY:playerMouseAngle(), que leía el raton). Asi cada jugador dispara
--- en SU direccion. Retrocompatible: en single player, player.aim ya es el angulo
--- al raton (lo fija Player:update por el fallback).
-
 PlayerBullets = {}
 PlayerBullets.__index = PlayerBullets
 local sprites = {}
@@ -27,7 +21,7 @@ function PlayerBullets:spawnBullet(player, bullets)
    bullet.y = player.y
    bullet.speed = speedbullet
    bullet.dead = false
-   bullet.direction = player.aim          -- antes: 15 ramas con playerMouseAngle()
+   bullet.direction = player.aim
    bullet.radio = 10
    table.insert(bullets, bullet)
 end
